@@ -11,11 +11,8 @@
             <Button x:Name="startButton" Width="100" Height="30"  Content="Start" Click="StartButton_Click" />
             <Button x:Name="stopButton" Width="100" Height="30"  Content="Stop" Click="StopButton_Click" />
             <Button x:Name="resetButton" Width="100" Height="30"  Content="Reset" Click="ResetButton_Click" />
-            <TextBox x:Name="textBox" Width="100" Height="30"/>
-
+            <TextBox x:Name="inputTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
         </StackPanel>
         <Canvas x:Name="canvas" DockPanel.Dock="Bottom" />
     </DockPanel>
 </Window>
-
-<!-- <Button Width="100" Height="30" Content="Click me!" /> -->

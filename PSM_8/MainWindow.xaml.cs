@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Windows.Shapes;
+
 namespace PSM_8
 {
     public partial class MainWindow : Window
@@ -64,6 +66,13 @@ namespace PSM_8
             _timer.Start();
         }
 
+        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string inputText = inputTextBox.Text;
+            Console.WriteLine(
+                inputText); // Wyświetla wprowadzony tekst w konsoli. Można go wykorzystać w dowolny sposób.
+        }
+
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             _timer.Stop();
@@ -71,6 +80,11 @@ namespace PSM_8
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            _currentGeneration[2, 2] = true;
+            _currentGeneration[2, 3] = true;
+            _currentGeneration[1, 2] = true;
+            _currentGeneration[0, 1] = true;
+
             _timer.Stop();
             _currentGeneration = new bool[Size, Size];
             _nextGeneration = new bool[Size, Size];
@@ -86,43 +100,14 @@ namespace PSM_8
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Calculate the next generation based on the current generation
-            CalculateNextGeneration();
             
+            _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration,inputTextBox);
 
             // Update the cells on the canvas
             _algorithms.UpdateCells(_nextGeneration, _cells);
             // Update the current generation with the next generation
             _currentGeneration = (bool[,])_nextGeneration.Clone();
         }
-
-        private void CalculateNextGeneration()
-        {
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    int aliveNeighbors =
-                        _algorithms.GetNumberOfAliveNeighbors(_currentGeneration, i, j); //GetAliveNeighbors(i, j);
-                    if (_currentGeneration[i, j])
-                    {
-                        if (aliveNeighbors < 2 || aliveNeighbors > 3)
-                        {
-                            _nextGeneration[i, j] = false;
-                        }
-                        else
-                        {
-                            _nextGeneration[i, j] = true;
-                        }
-                    }
-                    else
-                    {
-                        if (aliveNeighbors == 3)
-                        {
-                            _nextGeneration[i, j] = true;
-                        }
-                    }
-                }
-            }
-        }
+        
     }
 }

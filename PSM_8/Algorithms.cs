@@ -1,4 +1,6 @@
-﻿using System.Windows.Shapes;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Windows.Shapes;
 namespace PSM_8
 {
     public class Algorithms
@@ -49,6 +51,66 @@ namespace PSM_8
             }
 
             return aliveNeighbors;
+        }
+        
+        
+        public bool[,] CalculateNextGeneration(bool[,] _currentGeneration,TextBox inputTextBox)//inputTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
+        {
+            bool[,] _nextGeneration = new bool[Size, Size];
+            if (!string.IsNullOrEmpty(inputTextBox.Text))
+            {
+
+
+                string[] box_Text = inputTextBox.Text.Split('/');
+                string dividendStr = box_Text[0];
+                string divisorStr = box_Text[1];
+
+                List<int> liveList = new List<int>();
+                List<int> birthList = new List<int>();
+
+                foreach (char digit in dividendStr)
+                {
+                    int num = int.Parse(digit.ToString());
+                    if (!liveList.Contains(num))
+                    {
+                        liveList.Add(num);
+                    }
+                }
+
+                foreach (char digit in divisorStr)
+                {
+                    int num = int.Parse(digit.ToString());
+                    birthList.Add(num);
+                }
+
+                for (int i = 0; i < Size; i++)
+                {
+                    for (int j = 0; j < Size; j++)
+                    {
+                        int aliveNeighbors = GetNumberOfAliveNeighbors(_currentGeneration, i, j);
+                        if (_currentGeneration[i, j])
+                        {
+                            if (liveList.Contains(aliveNeighbors))
+                            {
+                                _nextGeneration[i, j] = true;
+                            }
+                            else
+                            {
+                                _nextGeneration[i, j] = false;
+                            }
+                        }
+                        else
+                        {
+                            if (birthList.Contains(aliveNeighbors))
+                            {
+                                _nextGeneration[i, j] = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return _nextGeneration;
         }
     }
 }
