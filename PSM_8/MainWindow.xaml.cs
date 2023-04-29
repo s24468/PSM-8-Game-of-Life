@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Windows.Shapes;
 
 namespace PSM_8
 {
@@ -12,26 +10,28 @@ namespace PSM_8
     {
         private const int Size = 20;
         private readonly Rectangle[,] _cells = new Rectangle[Size, Size];
-        private readonly DispatcherTimer _timer = new DispatcherTimer();
+        private readonly DispatcherTimer _timer = new();
         private bool[,] _currentGeneration = new bool[Size, Size];
         private bool[,] _nextGeneration = new bool[Size, Size];
-        private Algorithms _algorithms = new Algorithms(Size);
+        private readonly Algorithms _algorithms = new(Size);
 
         public MainWindow()
         {
             InitializeComponent();
 
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
             {
-                for (int j = 0; j < Size; j++)
+                for (var j = 0; j < Size; j++)
                 {
-                    Rectangle rect = new Rectangle
+                    var rect = new Rectangle
                     {
                         Width = 20,
                         Height = 20,
                         Fill = System.Windows.Media.Brushes.White,
                         Stroke = System.Windows.Media.Brushes.Black,
-                        StrokeThickness = 1
+                        StrokeThickness = 1,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch
                     };
                     Canvas.SetLeft(rect, i * 20);
                     Canvas.SetTop(rect, j * 20);
@@ -40,23 +40,6 @@ namespace PSM_8
                 }
             }
 
-            // _currentGeneration[2, 1] = true;
-            // _currentGeneration[2, 2] = true;
-            // _currentGeneration[2, 3] = true;
-            // _currentGeneration[1, 2] = true;
-            // _currentGeneration[0, 1] = true;
-            // _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
-
-            // for (int i = 0; i < Size; i++)
-            // {
-            //     for (int j = 0; j < Size; j++)
-            //     {
-            //         if (_currentGeneration[i, j])
-            //         {
-            //             _cells[i, j].Fill = System.Windows.Media.Brushes.Black;
-            //         }
-            //     }
-            // }
 
             _timer.Interval = TimeSpan.FromMilliseconds(200);
             _timer.Tick += Timer_Tick;
@@ -64,13 +47,13 @@ namespace PSM_8
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
+            _currentGeneration = _algorithms.InitializeGeneration(InitializeTextBox);
             _timer.Start();
         }
 
         private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string inputText = rulesTextBox.Text;
+            string inputText = RulesTextBox.Text;
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -78,57 +61,12 @@ namespace PSM_8
             _timer.Stop();
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            _timer.Stop();
-
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    Rectangle rect = new Rectangle
-                    {
-                        Width = 20,
-                        Height = 20,
-                        Fill = System.Windows.Media.Brushes.White,
-                        Stroke = System.Windows.Media.Brushes.Black,
-                        StrokeThickness = 1
-                    };
-                    Canvas.SetLeft(rect, i * 20);
-                    Canvas.SetTop(rect, j * 20);
-                    canvas.Children.Add(rect);
-                    _cells[i, j] = rect;
-                }
-            }
-
-            _currentGeneration[2, 1] = true;
-            _currentGeneration[2, 2] = true;
-            _currentGeneration[2, 3] = true;
-            _currentGeneration[1, 2] = true;
-            _currentGeneration[0, 1] = true;
-
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    if (_currentGeneration[i, j])
-                    {
-                        _cells[i, j].Fill = System.Windows.Media.Brushes.Black;
-                    }
-                }
-            }
-
-            _timer.Start();
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
-            _timer.Tick += Timer_Tick;
-        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Calculate the next generation based on the current generation
-            // _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
 
-            _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration, rulesTextBox);
+            _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration, RulesTextBox);
 
             // Update the cells on the canvas
             _algorithms.UpdateCells(_nextGeneration, _cells);

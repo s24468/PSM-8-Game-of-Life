@@ -8,11 +8,16 @@
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Button x:Name="startButton" Width="100" Height="30" Content="Start" Click="StartButton_Click" />
-            <Button x:Name="stopButton" Width="100" Height="30" Content="Stop" Click="StopButton_Click" />
-            <TextBox x:Name="rulesTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
-            <TextBox x:Name="initializeTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
+            <Button x:Name="StartButton" Width="100" Height="30" Content="Start" Click="StartButton_Click"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="80" MinHeight="25" />
+            <Button x:Name="StopButton" Width="100" Height="30" Content="Stop" Click="StopButton_Click"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="80" MinHeight="25" />
+            <TextBox x:Name="RulesTextBox" Width="200"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="150" MinHeight="25" />
+            <TextBox x:Name="InitializeTextBox" Width="200"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="150" MinHeight="25" />
         </StackPanel>
-        <Canvas x:Name="canvas" DockPanel.Dock="Bottom" />
+        <Canvas x:Name="canvas" DockPanel.Dock="Bottom"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </DockPanel>
 </Window>

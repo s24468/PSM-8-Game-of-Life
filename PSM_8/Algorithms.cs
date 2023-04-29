@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+using static System.Int32;
 
 namespace PSM_8
 {
@@ -16,23 +17,18 @@ namespace PSM_8
 
         public void UpdateCells(bool[,] nextGeneration, Rectangle[,] cells)
         {
-            for (int i = 0; i < Size; i++)
+            for (var i = 0; i < Size; i++)
             {
-                for (int j = 0; j < Size; j++)
+                for (var j = 0; j < Size; j++)
                 {
-                    if (nextGeneration[i, j])
-                    {
-                        cells[i, j].Fill = System.Windows.Media.Brushes.Black;
-                    }
-                    else
-                    {
-                        cells[i, j].Fill = System.Windows.Media.Brushes.White;
-                    }
+                    cells[i, j].Fill = nextGeneration[i, j]
+                        ? System.Windows.Media.Brushes.Black
+                        : System.Windows.Media.Brushes.White;
                 }
             }
         }
 
-        public int GetNumberOfAliveNeighbors(bool[,] _currentGeneration, int xCoordinate, int yCoordinate)
+        private int GetNumberOfAliveNeighbors(bool[,] currentGeneration, int xCoordinate, int yCoordinate)
         {
             int aliveNeighbors = 0;
             for (var x = -1; x <= 1; x++)
@@ -44,9 +40,9 @@ namespace PSM_8
                         continue;
                     }
 
-                    int ii = xCoordinate + x;
-                    int jj = yCoordinate + y;
-                    if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && _currentGeneration[ii, jj]) // ZWYKŁA TABLICA
+                    var ii = xCoordinate + x;
+                    var jj = yCoordinate + y;
+                    if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && currentGeneration[ii, jj]) // ZWYKŁA TABLICA
                     {
                         aliveNeighbors++;
                     }
@@ -56,37 +52,34 @@ namespace PSM_8
             return aliveNeighbors;
         }
 
-        public bool[,] innitializeGeneration(TextBox inputTextBox)
+        public bool[,] InitializeGeneration(TextBox inputTextBox)
         {
             var generation = new bool[Size, Size];
-            var coordinatesX = new List<int>();
-            var coordinatesY = new List<int>();
 
             if (!string.IsNullOrEmpty(inputTextBox.Text))
             {
+                var coordinates = new List<(int, int)>();
+
                 var pairs = inputTextBox.Text.Split(' ');
                 foreach (var pair in pairs)
                 {
                     var nums = pair.Split(',');
-                    coordinatesX.Add(int.Parse(nums[0]));
-                    coordinatesY.Add(int.Parse(nums[1]));
+                    coordinates.Add((Parse(nums[0]), Parse(nums[1])));
                 }
 
-                for (int i = 0; i < coordinatesX.Count; i++)
+                foreach (var (x, y) in coordinates)
                 {
-                    var x = coordinatesX[i];
-                    var y = coordinatesY[i];
-                    generation[x,y] = true;
+                    generation[x, y] = true;
                 }
             }
 
             return generation;
         }
 
-        public bool[,] CalculateNextGeneration(bool[,] _currentGeneration, TextBox inputTextBox)
+        public bool[,] CalculateNextGeneration(bool[,] currentGeneration, TextBox inputTextBox)
         {
             var nextGeneration = new bool[Size, Size];
-            if (nextGeneration == null) throw new ArgumentNullException(nameof(nextGeneration));
+            if (nextGeneration == null) throw new Exception(nameof(nextGeneration));
             if (!string.IsNullOrEmpty(inputTextBox.Text))
             {
                 var (liveList, birthList) = CreateLiveBirthList(inputTextBox);
@@ -95,8 +88,8 @@ namespace PSM_8
                 {
                     for (var j = 0; j < Size; j++)
                     {
-                        var aliveNeighbors = GetNumberOfAliveNeighbors(_currentGeneration, i, j);
-                        if (_currentGeneration[i, j])
+                        var aliveNeighbors = GetNumberOfAliveNeighbors(currentGeneration, i, j);
+                        if (currentGeneration[i, j])
                         {
                             if (liveList.Contains(aliveNeighbors))
                             {
@@ -121,43 +114,27 @@ namespace PSM_8
             return nextGeneration;
         }
 
-        public (List<int> liveList, List<int> birthList) CreateLiveBirthList(TextBox inputTextBox)
+        private (List<int> liveList, List<int> birthList) CreateLiveBirthList(TextBox inputTextBox)
         {
-            var box_Text = inputTextBox.Text.Split('/');
+            var boxText = inputTextBox.Text.Split('/') ?? throw new Exception("inputTextBox.Text.Split(\'/\')");
             var liveList = new List<int>();
             var birthList = new List<int>();
 
-            foreach (char digit in box_Text[0])
+            foreach (char digit in boxText[0])
             {
-                var num = int.Parse(digit.ToString());
+                var num = Parse(digit.ToString());
                 if (!liveList.Contains(num))
                 {
                     liveList.Add(num);
                 }
             }
 
-            foreach (var digit in box_Text[1])
+            foreach (var digit in boxText[1])
             {
-                birthList.Add(int.Parse(digit.ToString()));
+                birthList.Add(Parse(digit.ToString()));
             }
 
             return (liveList, birthList);
         }
     }
 }
-
-
-// var generation = new bool[Size, Size];
-// var coordinates = new List<(int, int)>();
-//
-// var pairs = inputTextBox.Text.Split(' ');
-// foreach (var pair in pairs)
-// {
-//     var nums = pair.Split(',');
-//     coordinates.Add((int.Parse(nums[0]), int.Parse(nums[1])));
-// }
-//
-// foreach (var (x, y) in coordinates)
-// {
-//     generation[x][y] = true;
-// }
