@@ -8,10 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <Button x:Name="startButton" Width="100" Height="30"  Content="Start" Click="StartButton_Click" />
-            <Button x:Name="stopButton" Width="100" Height="30"  Content="Stop" Click="StopButton_Click" />
-            <Button x:Name="resetButton" Width="100" Height="30"  Content="Reset" Click="ResetButton_Click" />
-            <TextBox x:Name="inputTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
+            <Button x:Name="startButton" Width="100" Height="30" Content="Start" Click="StartButton_Click" />
+            <Button x:Name="stopButton" Width="100" Height="30" Content="Stop" Click="StopButton_Click" />
+            <TextBox x:Name="rulesTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
+            <TextBox x:Name="initializeTextBox" Width="200" TextChanged="InputTextBox_TextChanged" />
         </StackPanel>
         <Canvas x:Name="canvas" DockPanel.Dock="Bottom" />
     </DockPanel>

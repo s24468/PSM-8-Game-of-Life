@@ -40,6 +40,67 @@ namespace PSM_8
                 }
             }
 
+            // _currentGeneration[2, 1] = true;
+            // _currentGeneration[2, 2] = true;
+            // _currentGeneration[2, 3] = true;
+            // _currentGeneration[1, 2] = true;
+            // _currentGeneration[0, 1] = true;
+            // _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
+
+            // for (int i = 0; i < Size; i++)
+            // {
+            //     for (int j = 0; j < Size; j++)
+            //     {
+            //         if (_currentGeneration[i, j])
+            //         {
+            //             _cells[i, j].Fill = System.Windows.Media.Brushes.Black;
+            //         }
+            //     }
+            // }
+
+            _timer.Interval = TimeSpan.FromMilliseconds(200);
+            _timer.Tick += Timer_Tick;
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
+            _timer.Start();
+        }
+
+        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string inputText = rulesTextBox.Text;
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            _timer.Stop();
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _timer.Stop();
+
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    Rectangle rect = new Rectangle
+                    {
+                        Width = 20,
+                        Height = 20,
+                        Fill = System.Windows.Media.Brushes.White,
+                        Stroke = System.Windows.Media.Brushes.Black,
+                        StrokeThickness = 1
+                    };
+                    Canvas.SetLeft(rect, i * 20);
+                    Canvas.SetTop(rect, j * 20);
+                    canvas.Children.Add(rect);
+                    _cells[i, j] = rect;
+                }
+            }
+
             _currentGeneration[2, 1] = true;
             _currentGeneration[2, 2] = true;
             _currentGeneration[2, 3] = true;
@@ -57,57 +118,22 @@ namespace PSM_8
                 }
             }
 
+            _timer.Start();
             _timer.Interval = TimeSpan.FromMilliseconds(200);
             _timer.Tick += Timer_Tick;
-        }
-
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            _timer.Start();
-        }
-
-        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string inputText = inputTextBox.Text;
-            Console.WriteLine(
-                inputText); // Wyświetla wprowadzony tekst w konsoli. Można go wykorzystać w dowolny sposób.
-        }
-
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            _timer.Stop();
-        }
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            _currentGeneration[2, 2] = true;
-            _currentGeneration[2, 3] = true;
-            _currentGeneration[1, 2] = true;
-            _currentGeneration[0, 1] = true;
-
-            _timer.Stop();
-            _currentGeneration = new bool[Size, Size];
-            _nextGeneration = new bool[Size, Size];
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    _cells[i, j].Fill = System.Windows.Media.Brushes.White;
-                }
-            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Calculate the next generation based on the current generation
-            
-            _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration,inputTextBox);
+            // _currentGeneration = _algorithms.innitializeGeneration(initializeTextBox);
+
+            _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration, rulesTextBox);
 
             // Update the cells on the canvas
             _algorithms.UpdateCells(_nextGeneration, _cells);
             // Update the current generation with the next generation
             _currentGeneration = (bool[,])_nextGeneration.Clone();
         }
-        
     }
 }

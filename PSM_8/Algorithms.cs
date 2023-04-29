@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Shapes;
+
 namespace PSM_8
 {
     public class Algorithms
@@ -29,7 +31,8 @@ namespace PSM_8
                 }
             }
         }
-        public int GetNumberOfAliveNeighbors(bool[,] _currentGeneration,int xCoordinate, int yCoordinate)
+
+        public int GetNumberOfAliveNeighbors(bool[,] _currentGeneration, int xCoordinate, int yCoordinate)
         {
             int aliveNeighbors = 0;
             for (var x = -1; x <= 1; x++)
@@ -43,7 +46,7 @@ namespace PSM_8
 
                     int ii = xCoordinate + x;
                     int jj = yCoordinate + y;
-                    if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && _currentGeneration[ii, jj])// ZWYKŁA TABLICA
+                    if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && _currentGeneration[ii, jj]) // ZWYKŁA TABLICA
                     {
                         aliveNeighbors++;
                     }
@@ -52,65 +55,109 @@ namespace PSM_8
 
             return aliveNeighbors;
         }
-        
-        
-        public bool[,] CalculateNextGeneration(bool[,] _currentGeneration,TextBox inputTextBox)//inputTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
+
+        public bool[,] innitializeGeneration(TextBox inputTextBox)
         {
-            bool[,] _nextGeneration = new bool[Size, Size];
+            var generation = new bool[Size, Size];
+            var coordinatesX = new List<int>();
+            var coordinatesY = new List<int>();
+
             if (!string.IsNullOrEmpty(inputTextBox.Text))
             {
-
-
-                string[] box_Text = inputTextBox.Text.Split('/');
-                string dividendStr = box_Text[0];
-                string divisorStr = box_Text[1];
-
-                List<int> liveList = new List<int>();
-                List<int> birthList = new List<int>();
-
-                foreach (char digit in dividendStr)
+                var pairs = inputTextBox.Text.Split(' ');
+                foreach (var pair in pairs)
                 {
-                    int num = int.Parse(digit.ToString());
-                    if (!liveList.Contains(num))
-                    {
-                        liveList.Add(num);
-                    }
+                    var nums = pair.Split(',');
+                    coordinatesX.Add(int.Parse(nums[0]));
+                    coordinatesY.Add(int.Parse(nums[1]));
                 }
 
-                foreach (char digit in divisorStr)
+                for (int i = 0; i < coordinatesX.Count; i++)
                 {
-                    int num = int.Parse(digit.ToString());
-                    birthList.Add(num);
+                    var x = coordinatesX[i];
+                    var y = coordinatesY[i];
+                    generation[x,y] = true;
                 }
+            }
 
-                for (int i = 0; i < Size; i++)
+            return generation;
+        }
+
+        public bool[,] CalculateNextGeneration(bool[,] _currentGeneration, TextBox inputTextBox)
+        {
+            var nextGeneration = new bool[Size, Size];
+            if (nextGeneration == null) throw new ArgumentNullException(nameof(nextGeneration));
+            if (!string.IsNullOrEmpty(inputTextBox.Text))
+            {
+                var (liveList, birthList) = CreateLiveBirthList(inputTextBox);
+
+                for (var i = 0; i < Size; i++)
                 {
-                    for (int j = 0; j < Size; j++)
+                    for (var j = 0; j < Size; j++)
                     {
-                        int aliveNeighbors = GetNumberOfAliveNeighbors(_currentGeneration, i, j);
+                        var aliveNeighbors = GetNumberOfAliveNeighbors(_currentGeneration, i, j);
                         if (_currentGeneration[i, j])
                         {
                             if (liveList.Contains(aliveNeighbors))
                             {
-                                _nextGeneration[i, j] = true;
+                                nextGeneration[i, j] = true;
                             }
                             else
                             {
-                                _nextGeneration[i, j] = false;
+                                nextGeneration[i, j] = false;
                             }
                         }
                         else
                         {
                             if (birthList.Contains(aliveNeighbors))
                             {
-                                _nextGeneration[i, j] = true;
+                                nextGeneration[i, j] = true;
                             }
                         }
                     }
                 }
             }
 
-            return _nextGeneration;
+            return nextGeneration;
+        }
+
+        public (List<int> liveList, List<int> birthList) CreateLiveBirthList(TextBox inputTextBox)
+        {
+            var box_Text = inputTextBox.Text.Split('/');
+            var liveList = new List<int>();
+            var birthList = new List<int>();
+
+            foreach (char digit in box_Text[0])
+            {
+                var num = int.Parse(digit.ToString());
+                if (!liveList.Contains(num))
+                {
+                    liveList.Add(num);
+                }
+            }
+
+            foreach (var digit in box_Text[1])
+            {
+                birthList.Add(int.Parse(digit.ToString()));
+            }
+
+            return (liveList, birthList);
         }
     }
 }
+
+
+// var generation = new bool[Size, Size];
+// var coordinates = new List<(int, int)>();
+//
+// var pairs = inputTextBox.Text.Split(' ');
+// foreach (var pair in pairs)
+// {
+//     var nums = pair.Split(',');
+//     coordinates.Add((int.Parse(nums[0]), int.Parse(nums[1])));
+// }
+//
+// foreach (var (x, y) in coordinates)
+// {
+//     generation[x][y] = true;
+// }
