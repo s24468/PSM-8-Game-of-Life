@@ -30,7 +30,7 @@ namespace PSM_8
 
         private int GetNumberOfAliveNeighbors(bool[,] currentGeneration, int xCoordinate, int yCoordinate)
         {
-            int aliveNeighbors = 0;
+            var aliveNeighbors = 0;
             for (var x = -1; x <= 1; x++)
             {
                 for (var y = -1; y <= 1; y++)
@@ -40,36 +40,26 @@ namespace PSM_8
                         continue;
                     }
 
-                    var ii = xCoordinate + x;
-                    var jj = yCoordinate + y;
-                    // if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && currentGeneration[ii, jj]) // ZWYKŁA TABLICA
-                    // {
-                    //     aliveNeighbors++;
-                    // }
-                    if (ii >= 0 && jj >= 0 && currentGeneration[ii % Size, jj % Size])
-                    {
-                        aliveNeighbors++;
-                    }
-
-                    if (ii < 0 && jj >= 0 && currentGeneration[Size - 1, jj % Size])
-                    {
-                        aliveNeighbors++;
-                    }
-
-                    if (ii >= 0 && jj < 0 && currentGeneration[ii % Size, Size - 1])
-                    {
-                        aliveNeighbors++;
-                    }
-
-                    if (ii < 0 && jj < 0 && currentGeneration[Size - 1, Size - 1])
+                    var ii = RoundIfNegativeNumbers(xCoordinate + x) % Size;
+                    var jj = RoundIfNegativeNumbers(yCoordinate + y) % Size;
+                    if (currentGeneration[ii, jj])
                     {
                         aliveNeighbors++;
                     }
                 }
             }
 
-
             return aliveNeighbors;
+        }
+
+        private int RoundIfNegativeNumbers(int x)
+        {
+            if (x < 0)
+            {
+                return Size - 1;
+            }
+
+            return x;
         }
 
         public bool[,] InitializeGeneration(TextBox inputTextBox)
@@ -115,10 +105,6 @@ namespace PSM_8
                             {
                                 nextGeneration[i, j] = true;
                             }
-                            // else
-                            // {
-                            //     nextGeneration[i, j] = false;
-                            // }
                         }
                         else
                         {
@@ -134,13 +120,13 @@ namespace PSM_8
             return nextGeneration;
         }
 
-        private (List<int> liveList, List<int> birthList) CreateLiveBirthList(TextBox inputTextBox)
+        private static (List<int> liveList, List<int> birthList) CreateLiveBirthList(TextBox inputTextBox)
         {
             var boxText = inputTextBox.Text.Split('/') ?? throw new Exception("inputTextBox.Text.Split(\'/\')");
             var liveList = new List<int>();
             var birthList = new List<int>();
 
-            foreach (char digit in boxText[0])
+            foreach (var digit in boxText[0])
             {
                 var num = Parse(digit.ToString());
                 if (!liveList.Contains(num))

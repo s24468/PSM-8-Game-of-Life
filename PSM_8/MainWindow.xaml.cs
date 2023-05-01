@@ -41,7 +41,7 @@ namespace PSM_8
             }
 
 
-            _timer.Interval = TimeSpan.FromMilliseconds(800);
+            _timer.Interval = TimeSpan.FromMilliseconds(1000);
             _timer.Tick += Timer_Tick;
         }
 
@@ -49,11 +49,6 @@ namespace PSM_8
         {
             _currentGeneration = _algorithms.InitializeGeneration(InitializeTextBox);
             _timer.Start();
-        }
-
-        private void InputTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string inputText = RulesTextBox.Text;
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -65,9 +60,7 @@ namespace PSM_8
         private void Timer_Tick(object sender, EventArgs e)
         {
             // Calculate the next generation based on the current generation
-
             _nextGeneration = _algorithms.CalculateNextGeneration(_currentGeneration, RulesTextBox);
-
             // Update the cells on the canvas
             _algorithms.UpdateCells(_nextGeneration, _cells);
             // Update the current generation with the next generation
