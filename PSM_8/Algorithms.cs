@@ -42,12 +42,32 @@ namespace PSM_8
 
                     var ii = xCoordinate + x;
                     var jj = yCoordinate + y;
-                    if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && currentGeneration[ii, jj]) // ZWYKŁA TABLICA
+                    // if (ii >= 0 && ii < Size && jj >= 0 && jj < Size && currentGeneration[ii, jj]) // ZWYKŁA TABLICA
+                    // {
+                    //     aliveNeighbors++;
+                    // }
+                    if (ii >= 0 && jj >= 0 && currentGeneration[ii % Size, jj % Size])
+                    {
+                        aliveNeighbors++;
+                    }
+
+                    if (ii < 0 && jj >= 0 && currentGeneration[Size - 1, jj % Size])
+                    {
+                        aliveNeighbors++;
+                    }
+
+                    if (ii >= 0 && jj < 0 && currentGeneration[ii % Size, Size - 1])
+                    {
+                        aliveNeighbors++;
+                    }
+
+                    if (ii < 0 && jj < 0 && currentGeneration[Size - 1, Size - 1])
                     {
                         aliveNeighbors++;
                     }
                 }
             }
+
 
             return aliveNeighbors;
         }
@@ -95,10 +115,10 @@ namespace PSM_8
                             {
                                 nextGeneration[i, j] = true;
                             }
-                            else
-                            {
-                                nextGeneration[i, j] = false;
-                            }
+                            // else
+                            // {
+                            //     nextGeneration[i, j] = false;
+                            // }
                         }
                         else
                         {

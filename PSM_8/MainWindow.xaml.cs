@@ -41,7 +41,7 @@ namespace PSM_8
             }
 
 
-            _timer.Interval = TimeSpan.FromMilliseconds(200);
+            _timer.Interval = TimeSpan.FromMilliseconds(800);
             _timer.Tick += Timer_Tick;
         }
 
